@@ -28,41 +28,17 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 
 # In[370]:
-
-
 df = pd.read_csv('F:\Data Science\python\wine\whitewine.csv')
-
-
 # In[371]:
-
-
 df.head(10)
-
-
 # In[372]:
-
-
 df.shape
-
-
 # In[373]:
-
-
 df.info()
-
-
 # In[374]:
-
-
 dfex = pd.read_csv('F:\Data Science\python\wine\whitewine4rows.csv')
-
-
 # In[375]:
-
-
 dfex.head()
-
-
 # In[376]:
 
 
@@ -77,69 +53,32 @@ dfex[columns_to_modify] = dfex[columns_to_modify].add(id_number)
 
 
 # In[377]:
-
-
 dfex.head()
-
-
 # In[378]:
-
-
 df = pd.concat([df, pd.DataFrame(dfex)], ignore_index=True)
-
-
 # In[379]:
-
-
 df.head()
-
-
 # In[380]:
-
-
 df.shape
-
-
 # In[381]:
-
-
 df.describe().T
-
-
 # In[382]:
-
-
 df.isnull().sum()
-
-
 # In[383]:
-
-
 # Let’s impute the missing values by means as the data present in the different columns are continuous values.
 for col in df.columns:
   if df[col].isnull().sum() > 0:
     df[col] = df[col].fillna(df[col].mean())
  
 df.isnull().sum().sum()
-
-
 # In[384]:
-
-
 df.isnull().sum()
-
-
 # In[385]:
-
-
 sns.set(style="whitegrid")
 df.hist(bins=20, figsize=(10, 10), edgecolor='black')
 plt.show()
 
-
 # In[386]:
-
-
 sns.set(style="whitegrid")
 fig, ax1 = plt.subplots(4,3, figsize=(15,30))
 k = 0
@@ -152,8 +91,6 @@ plt.show()
 
 
 # In[387]:
-
-
 sns.set(style='whitegrid')
 plt.figure(figsize=(20, 18))
 sns.boxplot(df, palette='Set3')
@@ -162,8 +99,6 @@ plt.show()
 
 
 # In[388]:
-
-
 # Remove outliers. so that we can get a better result
 
 lower_limit = df['free sulfur dioxide'].mean() - 3 * df['free sulfur dioxide'].std()
@@ -173,17 +108,11 @@ print(lower_limit, upper_limit)
 
 
 # In[389]:
-
-
 df_sulfur_without_outliers = df[(df['free sulfur dioxide'] > lower_limit) & (df['free sulfur dioxide'] < upper_limit)]
-
-
 df_sulfur_without_outliers.head(5)
 
 
 # In[390]:
-
-
 print(df.shape[0], df_sulfur_without_outliers.shape[0])
 
 # difference between the two dataframes
@@ -191,8 +120,6 @@ print(df.shape[0] - df_sulfur_without_outliers.shape[0])
 
 
 # In[391]:
-
-
 # remove outliers from total sulfur dioxide
 total_sulfur_lower_limit = df['total sulfur dioxide'].mean() - 3 * df['total sulfur dioxide'].std()
 total_sulfur_upper_limit = df['total sulfur dioxide'].mean() + 3 * df['total sulfur dioxide'].std()
@@ -201,22 +128,16 @@ print(total_sulfur_lower_limit, total_sulfur_upper_limit)
 
 
 # In[392]:
-
-
 total_sulfur_df_without_outliers = df_sulfur_without_outliers[(df_sulfur_without_outliers['total sulfur dioxide']> total_sulfur_lower_limit) & (df_sulfur_without_outliers['total sulfur dioxide'] < total_sulfur_upper_limit)]
 
 total_sulfur_df_without_outliers.head(5)
 
 
 # In[393]:
-
-
 df_sulfur_without_outliers.shape[0] - total_sulfur_df_without_outliers.shape[0]
 
 
 # In[394]:
-
-
 # remove outliers from residual sugar
 residual_sugar_lower_limit = df['residual sugar'].mean() - 3 * df['residual sugar'].std()
 residual_sugar_upper_limit = df['residual sugar'].mean() + 3 * df['residual sugar'].std()
@@ -225,28 +146,20 @@ print(residual_sugar_lower_limit, residual_sugar_upper_limit)
 
 
 # In[395]:
-
-
 residual_sugar_df_without_outliers = total_sulfur_df_without_outliers[(total_sulfur_df_without_outliers['residual sugar'] > residual_sugar_lower_limit) & (total_sulfur_df_without_outliers['residual sugar'] < residual_sugar_upper_limit)]
 
 residual_sugar_df_without_outliers.head(5)
 
 
 # In[396]:
-
-
 total_sulfur_df_without_outliers.shape[0] - residual_sugar_df_without_outliers.shape[0]
 
 
 # In[397]:
-
-
 residual_sugar_df_without_outliers.isnull().sum()
 
 
 # In[398]:
-
-
 # this is work main df without outliers 
 df = residual_sugar_df_without_outliers
 
@@ -255,8 +168,6 @@ df = residual_sugar_df_without_outliers
 
 
 sns.pairplot(df)
-
-
 # In[400]:
 
 
@@ -273,8 +184,6 @@ plt.show()
 
 
 # In[401]:
-
-
 def log_transform(col):
     return np.log(col[0])
 
@@ -286,8 +195,6 @@ df['sulphates'] = df[['sulphates']].apply(log_transform, axis=1)
 
 
 # In[402]:
-
-
 color = sns.color_palette("pastel")
 
 fig, ax1 = plt.subplots(4,3, figsize=(20,15))
@@ -298,8 +205,6 @@ for i in range(4):
             sns.distplot(df[columns[k]], ax = ax1[i][j], color='green')
             k += 1
 plt.show()
-
-
 # In[403]:
 
 
@@ -311,16 +216,12 @@ plt.show()
 
 
 # In[404]:
-
-
 plt.figure(figsize=(12, 12))
 sns.heatmap(df.corr() > 0.7, annot=True, cbar=False)
 plt.show()
 
 
 # In[405]:
-
-
 quality_ = df['quality'].value_counts()
 plt.figure(figsize=(8,6))
 plt.xlabel('Quality')
@@ -329,49 +230,35 @@ plt.show()
 
 
 # In[406]:
-
-
 df.corr()['quality'].sort_values(ascending=False)
 
 
 # In[407]:
-
-
 plt.figure(figsize=(10,8))
 sns.heatmap(df.corr(),annot =True, cmap='coolwarm')
 
 
 # In[408]:
-
-
 corr = df.corr()[['quality']]
 sns.heatmap(corr, annot=True, cmap='coolwarm')
 
 
 # In[409]:
-
-
 plt.figure(figsize=(10, 8))
 sns.heatmap(df.corr() > 0.7, annot=True, cbar=False, cmap='coolwarm' )
 plt.show()
 
 
 # In[410]:
-
-
 # relationship between wine and other characteristics
 df.corrwith(df['quality']).plot.bar(figsize=(10,8), title='Correlation with quality', rot=45, grid=True, fontsize=14)
 
 
 # In[411]:
-
-
 df.quality.value_counts()
 
 
 # In[412]:
-
-
 #  0 - 5 = bad wine 
 # 6 - 10 = good 
 
@@ -665,16 +552,4 @@ print('f1-score: ', metrics.f1_score(y_test, y_pred))
 tn, fp, fn, tp = metrics.confusion_matrix(y_test, y_pred).ravel()
 specificity = tn / (tn + fp)
 print('Specificity: ', specificity)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
